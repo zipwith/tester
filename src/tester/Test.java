@@ -202,11 +202,7 @@ public abstract class Test {
       pb.directory(working);
       pb.redirectOutput(actualOut);
       pb.redirectError(actualErr);
-      int exitCode = pb.start().waitFor();
-      if (exitCode != 0) {
-        message(nesting, "FAILED " + path + ": nonzero exit code (" + exitCode + ")");
-        return false;
-      }
+      pb.start().waitFor();
     }
 
     File expectedOut = new File(expected, nameOut);
