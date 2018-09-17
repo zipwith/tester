@@ -189,7 +189,6 @@ public class TestParser {
                 error("Text line is not part of a test case.");
               }
             }
-            readStrings(0); // TODO: save this as an explain in the folder?
             return folder;
           } catch (FileNotFoundException e) {
             error("Test file \"" + name + "\" not found");
