@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="tester" default="all" basedir=".">
+
+  <target name="all" depends="jar" description="Default target"/>
+
+  <target name="prepare">
+    <mkdir dir="bin"/>
+    <mkdir dir="tmp"/>
+  </target>
+
+  <target name="clean" description="remove generated files">
+    <delete dir="bin"/>
+    <delete dir="tmp"/>
+  </target>
+
+  <target name="compile" depends="prepare" description="Compile tester sources">
+    <javac srcdir="src" destdir="bin" includeantruntime="false"/>
+  </target>
+
+  <target name="jar" depends="compile" description="Build tester jar file">
+    <jar jarfile="tester.jar" update="false">
+      <fileset dir="bin" includes="**"/>
+      <manifest>
+        <attribute name="Main-Class" value="tester.Main"/>
+      </manifest>
+    </jar>
+  </target>
+
+</project>
