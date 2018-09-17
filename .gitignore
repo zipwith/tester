@@ -1,0 +1,6 @@
+*.class
+*.swp
+bin/
+tmp/
+local/
+tester.jar
