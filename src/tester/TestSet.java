@@ -37,6 +37,22 @@ class TestSet extends Test {
   }
 
   /**
+   * Records the number of individual tests in this TestSet (the sum of the number of tests in the
+   * children). A negative value indicates that the size has not yet been computed.
+   */
+  private int size = (-1);
+
+  public int size() {
+    if (size < 0) {
+      size = 0;
+      for (int i = 0; i < tests.length; i++) {
+        size += tests[i].size();
+      }
+    }
+    return size;
+  }
+
+  /**
    * Run this test using the specified parameters.
    *
    * @param working is the working directory where the test will be executed.

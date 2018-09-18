@@ -25,7 +25,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/** Represents a test case. */
+/** Represents a test (either a single test case or a set of tests). */
 public abstract class Test {
 
   /** A label to identify this test. */
@@ -35,6 +35,8 @@ public abstract class Test {
   public Test(String name) {
     this.name = name;
   }
+
+  public abstract int size();
 
   /** Compute a new path name for this test given the enclosing path. */
   protected String extendPath(String path) {

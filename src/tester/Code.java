@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /** A test case that is described by a code fragment. */
-class Code extends Test {
+class Code extends TestCase {
 
   /** File extension, including dot. */
   private String ext;

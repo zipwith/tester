@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /** A test case that is described by executing command line. */
-class Exec extends Test {
+class Exec extends TestCase {
 
   /** The command line string to execute. */
   private String cmd;
