@@ -144,7 +144,7 @@ public abstract class Test {
   /** Display differences between two files. */
   protected void diff(String msg, File expected, File actual) throws Exception {
     header(msg);
-    ProcessBuilder pb = new ProcessBuilder("diff", "-c", actual.getPath(), expected.getPath());
+    ProcessBuilder pb = new ProcessBuilder("diff", "-c", expected.getPath(), actual.getPath());
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     pb.start().waitFor();
     header("");
