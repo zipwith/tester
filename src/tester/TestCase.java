@@ -82,16 +82,24 @@ abstract class TestCase extends Test {
         || !expectedErr.exists()
         || !expectedErr.isFile()) {
       if ((flags & INTERACT) != 0) {
-        System.out.println("ISSUE: expected outputs for " + path + " are missing.");
-        header("standard output");
-        display(actualOut);
-        header("standard error");
-        display(actualErr);
-        header("");
-        if (ask("Use these outputs as the expected results", "yn") == 'y') {
-          copy(actualOut, expectedOut);
-          copy(actualErr, expectedErr);
-          return true;
+        if (actualOut.canRead() && actualErr.canRead()) {
+          System.out.println(
+              "ISSUE for " + path + ": expected outputs for " + path + " are missing.");
+          header("standard output");
+          display(actualOut);
+          header("standard error");
+          display(actualErr);
+          header("");
+          if (ask("Use these outputs as the expected results", "yn") == 'y') {
+            copy(actualOut, expectedOut);
+            copy(actualErr, expectedErr);
+            return true;
+          }
+        } else {
+          System.out.println(
+              "ISSUE for "
+                  + path
+                  + ": Expected and actual outputs are missing; use -r to run tests?");
         }
       }
       failed(flags, nesting, path, "Missing expected outputs");
@@ -101,7 +109,7 @@ abstract class TestCase extends Test {
     boolean errSame = sameContent(actualErr, expectedErr);
     if (!outSame || !errSame) {
       if ((flags & INTERACT) != 0) {
-        System.out.println("ISSUE: test did not produce expected outputs.");
+        System.out.println("ISSUE for " + path + ": test did not produce expected outputs.");
         if (!outSame) {
           diff("standard output", expectedOut, actualOut);
           if (ask("Use new output as the expected result", "yn") == 'y') {
