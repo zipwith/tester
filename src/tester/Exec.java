@@ -52,7 +52,7 @@ class Exec extends TestCase {
     path = extendPath(path);
 
     // Print message to indicate start of test:
-    message(nesting, "Exec " + path + ": " + cmd);
+    message((flags & QUIET) == 0, nesting, "Exec " + path + ": " + cmd);
 
     // Create and run test command:
     ArrayList<String> cmds = new ArrayList();

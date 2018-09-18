@@ -158,11 +158,13 @@ public abstract class Test {
   }
 
   /** Display a message at a specified nesting level. */
-  protected void message(int nesting, String msg) {
-    for (int i = 0; i < nesting; i++) {
-      System.out.print("....");
+  protected void message(boolean flag, int nesting, String msg) {
+    if (flag) {
+      for (int i = 0; i < nesting; i++) {
+        System.out.print("....");
+      }
+      System.out.println(msg);
     }
-    System.out.println(msg);
   }
 
   /** Ask the user a question, and only return when they enter a character listed in the options. */
@@ -183,6 +185,12 @@ public abstract class Test {
 
   /** INTERACT: 1=>query user when differences are found; 0=>report differences but do not stop. */
   public static final int INTERACT = 2;
+
+  /** QUIET: 1=>suppress messages for passing tests. */
+  public static final int QUIET = 4;
+
+  /** SUMMARY: 1=>suppress messages for TestSet summaries. */
+  public static final int SUMMARY = 8;
 
   /**
    * Run this test using the specified parameters.

@@ -56,7 +56,7 @@ class Code extends TestCase {
     path = extendPath(path);
 
     // Print message to indicate start of test:
-    message(nesting, "CodeTest: " + cmd + " " + path + ext);
+    message((flags & QUIET) == 0, nesting, "CodeTest: " + cmd + " " + path + ext);
 
     // Create the test file:
     File src = new File(actual, name + ext);

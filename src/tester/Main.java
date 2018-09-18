@@ -25,10 +25,12 @@ public class Main {
   /** A command line driver for the tester tool. */
   public static void main(String[] args) {
     if (args.length == 0) {
-      System.out.println("usage: tester [-wdir | -r | -i | file.tests]*");
+      System.out.println("usage: tester options ...");
       System.out.println("options: -wdir  set the working directory for test runs to dir");
       System.out.println("         -r    run tests (dryrun without this option)");
       System.out.println("         -i    enable interaction to update expected results");
+      System.out.println("         -q    quiet; do not print test progress messages");
+      System.out.println("         -s    do not print test set summaries");
       System.exit(0);
     }
     try {
@@ -56,6 +58,12 @@ public class Main {
                   break;
                 case 'i':
                   flags |= Test.INTERACT;
+                  break;
+                case 'q':
+                  flags |= Test.QUIET;
+                  break;
+                case 's':
+                  flags |= Test.SUMMARY;
                   break;
                 default:
                   System.out.println("Unknown command line flag " + args[i].charAt(j));
