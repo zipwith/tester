@@ -42,6 +42,10 @@ class TestSet extends Test {
    */
   private int size = (-1);
 
+  /**
+   * Calculate the size of this test (i.e., the total number of individual TestCase objects that it
+   * contains).
+   */
   public int size() {
     if (size < 0) {
       size = 0;
@@ -50,6 +54,23 @@ class TestSet extends Test {
       }
     }
     return size;
+  }
+
+  /**
+   * Records the total number of test cases that have passed (or -1 if that calculation has not been
+   * performed).
+   */
+  int numPassed = (-1);
+
+  /** Calculate the total number of test cases that have passed in this test. */
+  public int numPassed() {
+    if (numPassed < 0) {
+      numPassed = 0;
+      for (int i = 0; i < tests.length; i++) {
+        numPassed += tests[i].numPassed();
+      }
+    }
+    return numPassed;
   }
 
   /**
@@ -62,18 +83,20 @@ class TestSet extends Test {
    * @param nesting specifies the current nesting level (to determine indentation).
    * @param flags specifies operating flags (RUNTESTS|INTERACT).
    */
-  boolean run(File working, File expected, File actual, String path, int nesting, int flags)
+  void run(File working, File expected, File actual, String path, int nesting, int flags)
       throws Exception {
     path = extendPath(path);
 
     // Print message to indicate start of test:
     message(nesting, "TestSet " + path + " contains " + tests.length + " tests:");
+    numPassed = (-1); // reset counts from a previous run
 
     // Check that we can access expected and actual folders:
     File expectedDir = new File(expected, name);
     File actualDir = new File(actual, name);
     if (!checkDirectory(expectedDir) || !checkDirectory(actualDir)) {
-      return false;
+      System.out.println("TestSet " + path + " FAILED: Error with output directories");
+      return;
     }
 
     // Check for duplicate test names
@@ -81,22 +104,17 @@ class TestSet extends Test {
       for (int j = i + 1; j < tests.length; j++) {
         if (tests[i].name.equals(tests[j].name)) {
           System.out.println(
-              "Test " + path + " failed: multiple subtests called \"" + tests[i].name + "\"");
-          return false;
+              "Test " + path + " failed: Multiple subtests called \"" + tests[i].name + "\"");
+          return;
         }
       }
     }
 
     // Run individual tests:
-    int count = 0;
     for (int i = 0; i < tests.length; i++) {
-      if (tests[i].run(working, expectedDir, actualDir, path, nesting + 1, flags)) {
-        count++;
-      }
+      tests[i].run(working, expectedDir, actualDir, path, nesting + 1, flags);
       System.out.println();
     }
-    message(
-        nesting, "TestSet " + path + ": " + count + " out of " + tests.length + " tests passed");
-    return (count == tests.length);
+    message(nesting, path + ": passed " + numPassed() + " of " + size() + " tests");
   }
 }

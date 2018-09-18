@@ -47,7 +47,7 @@ class Exec extends TestCase {
    * @param nesting specifies the current nesting level (to determine indentation).
    * @param flags specifies operating flags (RUNTESTS|INTERACT).
    */
-  boolean run(File working, File expected, File actual, String path, int nesting, int flags)
+  void run(File working, File expected, File actual, String path, int nesting, int flags)
       throws Exception {
     path = extendPath(path);
 
@@ -57,6 +57,6 @@ class Exec extends TestCase {
     // Create and run test command:
     ArrayList<String> cmds = new ArrayList();
     addArgs(cmds, cmd);
-    return execTest(working, cmds, expected, actual, path, nesting, flags);
+    passed = execTest(working, cmds, expected, actual, path, nesting, flags);
   }
 }

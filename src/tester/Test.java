@@ -36,7 +36,14 @@ public abstract class Test {
     this.name = name;
   }
 
+  /**
+   * Calculate the size of this test (i.e., the total number of individual TestCase objects that it
+   * contains).
+   */
   public abstract int size();
+
+  /** Calculate the total number of test cases that have passed in this test. */
+  public abstract int numPassed();
 
   /** Compute a new path name for this test given the enclosing path. */
   protected String extendPath(String path) {
@@ -177,88 +184,6 @@ public abstract class Test {
   /** INTERACT: 1=>query user when differences are found; 0=>report differences but do not stop. */
   public static final int INTERACT = 2;
 
-  /** Attempt to run a test that executes a command and captures output in the specified files. */
-  protected boolean execTest(
-      File working,
-      ArrayList<String> cmds,
-      File expected,
-      File actual,
-      String path,
-      int nesting,
-      int flags)
-      throws Exception {
-    String nameOut = name + ".out";
-    File actualOut = new File(actual, nameOut);
-    String nameErr = name + ".err";
-    File actualErr = new File(actual, nameErr);
-
-    if ((flags & RUNTESTS) != 0) {
-      // Check that we can write to the files for capturing output:
-      if (!checkFile(actualOut) || !checkFile(actualErr)) {
-        message(nesting, "Cannot access files for capturing output");
-        return false;
-      }
-
-      // Run the command:
-      ProcessBuilder pb = new ProcessBuilder(cmds);
-      pb.directory(working);
-      pb.redirectOutput(actualOut);
-      pb.redirectError(actualErr);
-      pb.start().waitFor();
-    }
-
-    File expectedOut = new File(expected, nameOut);
-    File expectedErr = new File(expected, nameErr);
-    if (!expectedOut.exists()
-        || !expectedOut.isFile()
-        || !expectedErr.exists()
-        || !expectedErr.isFile()) {
-      if ((flags & INTERACT) != 0) {
-        System.out.println("ISSUE: expected outputs for " + path + " are missing.");
-        header("standard output");
-        display(actualOut);
-        header("standard error");
-        display(actualErr);
-        header("");
-        if (ask("Use these outputs as the expected results", "yn") == 'y') {
-          copy(actualOut, expectedOut);
-          copy(actualErr, expectedErr);
-          return true;
-        }
-      }
-      message(nesting, "FAILED " + path + ": missing expected outputs");
-      return false;
-    }
-    boolean outSame = sameContent(actualOut, expectedOut);
-    boolean errSame = sameContent(actualErr, expectedErr);
-    if (!outSame || !errSame) {
-      if ((flags & INTERACT) != 0) {
-        System.out.println("ISSUE: test did not produce expected outputs.");
-        if (!outSame) {
-          diff("standard output", expectedOut, actualOut);
-          if (ask("Use new output as the expected result", "yn") == 'y') {
-            copy(actualOut, expectedOut);
-            outSame = true;
-          }
-        }
-        if (!errSame) {
-          diff("standard error", expectedErr, actualErr);
-          if (ask("Use new outputs as the expected results", "yn") == 'y') {
-            copy(actualErr, expectedErr);
-            errSame = true;
-          }
-        }
-      }
-    }
-    if (outSame && errSame) {
-      message(nesting, "PASSED " + path);
-      return true;
-    } else {
-      message(nesting, "FAILED " + path + ": test did not produce expected outputs");
-      return false;
-    }
-  }
-
   /**
    * Run this test using the specified parameters.
    *
@@ -269,7 +194,6 @@ public abstract class Test {
    * @param nesting specifies the current nesting level (to determine indentation).
    * @param flags specifies operating flags (RUNTESTS|INTERACT).
    */
-  abstract boolean run(
-      File working, File expected, File actual, String path, int nesting, int flags)
+  abstract void run(File working, File expected, File actual, String path, int nesting, int flags)
       throws Exception;
 }

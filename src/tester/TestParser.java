@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/** Code for parsing test cases from text files. */
 public class TestParser {
 
   /** Source file name to use in error messages. */
