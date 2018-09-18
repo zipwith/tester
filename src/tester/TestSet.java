@@ -88,20 +88,14 @@ class TestSet extends Test {
     path = extendPath(path);
 
     // Print message to indicate start of test:
-    message(
-        (flags & QUIET) == 0,
-        nesting,
-        "Test set " + path + " contains " + tests.length + " tests:");
+    progress(flags, nesting, "Test set " + path + " contains " + tests.length + " tests:");
     numPassed = (-1); // reset counts from a previous run
 
     // Check that we can access expected and actual folders:
     File expectedDir = new File(expected, name);
     File actualDir = new File(actual, name);
     if (!checkDirectory(expectedDir) || !checkDirectory(actualDir)) {
-      message(
-          (flags & QUIET) == 0,
-          nesting,
-          "Test set " + path + " FAILED: Error with output directories");
+      progress(flags, nesting, "Test set " + path + " FAILED: Error with output directories");
       return;
     }
 
@@ -109,8 +103,8 @@ class TestSet extends Test {
     for (int i = 0; i < tests.length; i++) {
       for (int j = i + 1; j < tests.length; j++) {
         if (tests[i].name.equals(tests[j].name)) {
-          message(
-              (flags & QUIET) == 0,
+          progress(
+              flags,
               nesting,
               "Test set " + path + " failed: Multiple subtests called \"" + tests[i].name + "\"");
           return;
@@ -121,11 +115,8 @@ class TestSet extends Test {
     // Run individual tests:
     for (int i = 0; i < tests.length; i++) {
       tests[i].run(working, expectedDir, actualDir, path, nesting + 1, flags);
-      message((flags & QUIET) == 0, 0, "");
+      progress(flags, 0, "");
     }
-    message(
-        (flags & SUMMARY) == 0,
-        nesting,
-        path + ": passed " + numPassed() + " of " + size() + " tests");
+    summary(flags, nesting, path + ": passed " + numPassed() + " of " + size() + " tests");
   }
 }

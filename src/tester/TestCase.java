@@ -63,7 +63,7 @@ abstract class TestCase extends Test {
     if ((flags & RUNTESTS) != 0) {
       // Check that we can write to the files for capturing output:
       if (!checkFile(actualOut) || !checkFile(actualErr)) {
-        message((flags & QUIET) == 0, nesting, "Cannot access files for capturing output");
+        failed(flags, nesting, path, "Cannot access files for capturing output");
         return false;
       }
 
@@ -94,7 +94,7 @@ abstract class TestCase extends Test {
           return true;
         }
       }
-      message((flags & QUIET) == 0, nesting, "FAILED " + path + ": missing expected outputs");
+      failed(flags, nesting, path, "Missing expected outputs");
       return false;
     }
     boolean outSame = sameContent(actualOut, expectedOut);
@@ -119,13 +119,10 @@ abstract class TestCase extends Test {
       }
     }
     if (outSame && errSame) {
-      message((flags & QUIET) == 0, nesting, "PASSED " + path);
+      progress(flags, nesting, "PASSED " + path);
       return true;
     } else {
-      message(
-          (flags & QUIET) == 0,
-          nesting,
-          "FAILED " + path + ": test did not produce expected outputs");
+      failed(flags, nesting, path, "Test did not produce expected outputs");
       return false;
     }
   }

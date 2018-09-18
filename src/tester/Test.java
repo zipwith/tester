@@ -157,16 +157,6 @@ public abstract class Test {
     header("");
   }
 
-  /** Display a message at a specified nesting level. */
-  protected void message(boolean flag, int nesting, String msg) {
-    if (flag) {
-      for (int i = 0; i < nesting; i++) {
-        System.out.print("....");
-      }
-      System.out.println(msg);
-    }
-  }
-
   /** Ask the user a question, and only return when they enter a character listed in the options. */
   protected char ask(String question, String options) throws Exception {
     char c;
@@ -191,6 +181,38 @@ public abstract class Test {
 
   /** SUMMARY: 1=>suppress messages for TestSet summaries. */
   public static final int SUMMARY = 8;
+
+  /** FAILED: 1=>suppress messages for failing tests. */
+  public static final int FAILED = 16;
+
+  /** Display a message at a specified nesting level. */
+  private void message(int nesting, String msg) {
+    for (int i = 0; i < nesting; i++) {
+      System.out.print("....");
+    }
+    System.out.println(msg);
+  }
+
+  /** Display a progress message. */
+  protected void progress(int flags, int nesting, String msg) {
+    if ((flags & QUIET) == 0) {
+      message(nesting, msg);
+    }
+  }
+
+  /** Display a failure message. */
+  protected void failed(int flags, int nesting, String path, String msg) {
+    if ((flags & FAILED) == 0) {
+      message(nesting, "FAILED " + path + ": " + msg);
+    }
+  }
+
+  /** Display a summary message. */
+  protected void summary(int flags, int nesting, String msg) {
+    if ((flags & SUMMARY) == 0) {
+      message(nesting, msg);
+    }
+  }
 
   /**
    * Run this test using the specified parameters.
