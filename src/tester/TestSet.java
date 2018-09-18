@@ -36,6 +36,9 @@ class TestSet extends Test {
     this.tests = tests;
   }
 
+  /** Name of root file where tests are stored. */
+  public static final String root = "tests";
+
   /**
    * Records the number of individual tests in this TestSet (the sum of the number of tests in the
    * children). A negative value indicates that the size has not yet been computed.
@@ -95,18 +98,19 @@ class TestSet extends Test {
     File expectedDir = new File(expected, name);
     File actualDir = new File(actual, name);
     if (!checkDirectory(expectedDir) || !checkDirectory(actualDir)) {
-      progress(flags, nesting, "Test set " + path + " FAILED: Error with output directories");
+      failed(flags, nesting, path, "Error with output directories");
       return;
     }
 
     // Check for duplicate test names
     for (int i = 0; i < tests.length; i++) {
+      if (tests[i].name.equals(TestSet.root)) {
+        failed(flags, nesting, path, "Test name \"" + TestSet.root + "\" is reserved");
+        return;
+      }
       for (int j = i + 1; j < tests.length; j++) {
         if (tests[i].name.equals(tests[j].name)) {
-          progress(
-              flags,
-              nesting,
-              "Test set " + path + " failed: Multiple subtests called \"" + tests[i].name + "\"");
+          failed(flags, nesting, path, "Multiple subtests called \"" + tests[i].name + "\"");
           return;
         }
       }

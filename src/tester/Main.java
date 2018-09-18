@@ -37,6 +37,7 @@ public class Main {
     try {
       int flags = 0;
       File working = null;
+      File home = new File(".");
       for (int i = 0; i < args.length; i++) {
         if (args[i].startsWith("-")) {
           int l = args[i].length();
@@ -76,7 +77,6 @@ public class Main {
             }
           }
         } else {
-          TestSet tests = TestParser.readTestSet(args[i]);
           File expected = new File("expected");
           if (!Test.checkDirectory(expected)) {
             System.out.println("Unable to access or create folder \"" + expected.getPath() + "\"");
@@ -87,6 +87,7 @@ public class Main {
             System.out.println("Unable to access or create folder \"" + actual.getPath() + "\"");
             System.exit(-1);
           }
+          TestSet tests = TestParser.readTestSet(home, args[i]);
           tests.run(working, expected, actual, "", 0, flags);
         }
       }

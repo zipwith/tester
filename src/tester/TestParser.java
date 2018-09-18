@@ -19,6 +19,7 @@
 package tester;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -176,7 +177,7 @@ public class TestParser {
   public static final int MAX_NESTING = 6;
 
   /** Read a test, assuming that the current line is not TEXT or EOF. */
-  private Test parseTest() {
+  private Test parseTest(File parent) throws Exception {
     switch (type) {
       case TESTS:
         {
@@ -184,7 +185,7 @@ public class TestParser {
             error("Input exceeds maximum test file nesting (" + MAX_NESTING + " levels)");
           }
           try {
-            TestSet folder = readTestSet(name, nesting + 1);
+            TestSet folder = readTestSet(parent, name, nesting + 1);
             while (nextLine() == TEXT) {
               if (firstNonWhitespace() >= 0) {
                 error("Text line is not part of a test case.");
@@ -241,41 +242,34 @@ public class TestParser {
   }
 
   /** Read the rest of this file as an array of tests, having already read n tests. */
-  private Test[] parseTests(int n) {
+  private Test[] parseTests(File parent, int n) throws Exception {
     if (type == EOF) {
       return new Test[n];
     } else {
-      Test test = parseTest();
-      Test[] tests = parseTests(n + 1);
+      Test test = parseTest(parent);
+      Test[] tests = parseTests(parent, n + 1);
       tests[n] = test;
       return tests;
     }
   }
 
   /** Parse the input as a TestSet: some explanatory text followed by some number of test cases. */
-  private TestSet parseTestSet(String name) {
+  private TestSet parseTestSet(File parent, String name) throws Exception {
     String[] explain = readStrings(0);
-    return new TestSet(name, explain, parseTests(0));
+    return new TestSet(name, explain, parseTests(parent, 0));
   }
 
-  /** Test file suffix. */
-  public static final String suffix = ".tests";
-
   /** Read a set of tests from the named file at the given nesting level. */
-  protected static TestSet readTestSet(String name, int nesting) throws FileNotFoundException {
-    String filename = name;
-    if (name.endsWith(suffix)) {
-      name = name.substring(0, name.length() - suffix.length());
-    } else {
-      filename = filename + suffix;
-    }
-    BufferedReader reader = new BufferedReader(new FileReader(filename));
-    TestParser parser = new TestParser(filename, reader, nesting);
-    return parser.parseTestSet(name);
+  protected static TestSet readTestSet(File parent, String name, int nesting) throws Exception {
+    File folder = new File(parent, name);
+    File tests = new File(folder, TestSet.root);
+    BufferedReader reader = new BufferedReader(new FileReader(tests));
+    TestParser parser = new TestParser(tests.getPath(), reader, nesting);
+    return parser.parseTestSet(folder, name);
   }
 
   /** Read a set of tests from the named file at the top level (nesting level zero). */
-  public static TestSet readTestSet(String name) throws FileNotFoundException {
-    return readTestSet(name, 0);
+  public static TestSet readTestSet(File parent, String name) throws Exception {
+    return readTestSet(parent, name, 0);
   }
 }
