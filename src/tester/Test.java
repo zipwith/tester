@@ -31,9 +31,13 @@ public abstract class Test {
   /** A label to identify this test. */
   protected String name;
 
+  /** Comments/code that provides context for this test case. */
+  protected String[] context;
+
   /** Default constructor. */
-  public Test(String name) {
+  public Test(String name, String[] context) {
     this.name = name;
+    this.context = context;
   }
 
   /**
@@ -185,6 +189,9 @@ public abstract class Test {
   /** FAILED: 1=>suppress messages for failing tests. */
   public static final int FAILED = 16;
 
+  /** CONTEXT: 1=>do not show context for updates in interactive mode. */
+  public static final int CONTEXT = 32;
+
   /** Display a message at a specified nesting level. */
   private void message(int nesting, String msg) {
     for (int i = 0; i < nesting; i++) {
@@ -211,6 +218,15 @@ public abstract class Test {
   protected void summary(int flags, int nesting, String msg) {
     if ((flags & SUMMARY) == 0) {
       message(nesting, msg);
+    }
+  }
+
+  protected void showContext(int flags) {
+    if ((flags & CONTEXT) == 0 && context != null && context.length > 0) {
+      header("context");
+      for (int i = 0; i < context.length; i++) {
+        System.out.println(context[i]);
+      }
     }
   }
 

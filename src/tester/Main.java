@@ -29,6 +29,7 @@ public class Main {
       System.out.println("options: -wdir  set the working directory for test runs to dir");
       System.out.println("         -r    run tests (dryrun without this option)");
       System.out.println("         -i    enable interaction to update expected results");
+      System.out.println("         -c    do not print context for tests during interaction");
       System.out.println("         -q    quiet; do not print test progress messages");
       System.out.println("         -f    do not print test failed messages");
       System.out.println("         -s    do not print test set summaries");
@@ -69,6 +70,9 @@ public class Main {
                   break;
                 case 'f':
                   flags |= Test.FAILED;
+                  break;
+                case 'c':
+                  flags |= Test.CONTEXT;
                   break;
                 default:
                   System.out.println("Unknown command line flag " + args[i].charAt(j));

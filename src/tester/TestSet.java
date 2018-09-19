@@ -23,21 +23,14 @@ import java.io.File;
 /** A set of test cases. */
 class TestSet extends Test {
 
-  /** Introductory comments. */
-  private String[] explain;
-
   /** The collection of test cases. */
   private Test[] tests;
 
   /** Default constructor. */
-  TestSet(String name, String[] explain, Test[] tests) {
-    super(name);
-    this.explain = explain;
+  TestSet(String name, String[] context, Test[] tests) {
+    super(name, context);
     this.tests = tests;
   }
-
-  /** Name of root file where tests are stored. */
-  public static final String root = "tests";
 
   /**
    * Records the number of individual tests in this TestSet (the sum of the number of tests in the
@@ -75,6 +68,9 @@ class TestSet extends Test {
     }
     return numPassed;
   }
+
+  /** Name of root file where tests are stored. */
+  public static final String root = "tests";
 
   /**
    * Run this test using the specified parameters.

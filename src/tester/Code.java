@@ -27,18 +27,10 @@ class Code extends TestCase {
   /** File extension, including dot. */
   private String ext;
 
-  /** Command to run with this file. */
-  private String cmd;
-
-  /** Lines of code. */
-  private String[] code;
-
   /** Default constructor. */
-  Code(String name, String ext, String cmd, String[] code) {
-    super(name);
+  Code(String name, String[] context, String cmd, String ext) {
+    super(name, context, cmd);
     this.ext = ext;
-    this.cmd = cmd;
-    this.code = code;
   }
 
   /**
@@ -60,7 +52,7 @@ class Code extends TestCase {
 
     // Create the test file:
     File src = new File(actual, name + ext);
-    writeFile(src, code);
+    writeFile(src, context);
 
     // Create and run test command:
     ArrayList<String> cmds = new ArrayList();

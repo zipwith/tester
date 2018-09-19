@@ -24,9 +24,13 @@ import java.util.ArrayList;
 /** A single test case. */
 abstract class TestCase extends Test {
 
+  /** The command line string to execute. */
+  protected String cmd;
+
   /** Default constructor. */
-  TestCase(String name) {
-    super(name);
+  TestCase(String name, String[] context, String cmd) {
+    super(name, context);
+    this.cmd = cmd;
   }
 
   /**
@@ -85,6 +89,7 @@ abstract class TestCase extends Test {
         if (actualOut.canRead() && actualErr.canRead()) {
           System.out.println(
               "ISSUE for " + path + ": expected outputs for " + path + " are missing.");
+          showContext(flags);
           header("standard output");
           display(actualOut);
           header("standard error");
@@ -109,8 +114,11 @@ abstract class TestCase extends Test {
     boolean errSame = sameContent(actualErr, expectedErr);
     if (!outSame || !errSame) {
       if ((flags & INTERACT) != 0) {
+        boolean contextShown = false;
         System.out.println("ISSUE for " + path + ": test did not produce expected outputs.");
         if (!outSame) {
+          showContext(flags);
+          contextShown = true;
           diff("standard output", expectedOut, actualOut);
           if (ask("Use new output as the expected result", "yn") == 'y') {
             copy(actualOut, expectedOut);
@@ -118,6 +126,9 @@ abstract class TestCase extends Test {
           }
         }
         if (!errSame) {
+          if (!contextShown) {
+            showContext(flags);
+          }
           diff("standard error", expectedErr, actualErr);
           if (ask("Use new outputs as the expected results", "yn") == 'y') {
             copy(actualErr, expectedErr);

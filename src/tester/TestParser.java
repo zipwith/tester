@@ -158,6 +158,19 @@ public class TestParser {
     return false;
   }
 
+  /** Read a sequence of text lines from the input, skipping any preceding blank lines. */
+  private String[] readContext() {
+    while (nextLine() == TEXT) {
+      if (firstNonWhitespace() >= 0) {
+        String str = line;
+        String[] strs = readStrings(1);
+        strs[0] = str;
+        return strs;
+      }
+    }
+    return new String[0];
+  }
+
   /**
    * Read a sequence of text lines from the input, with parameter n specifying how many lines have
    * been read already in this text block. (n should be zero for first call.)
@@ -202,7 +215,7 @@ public class TestParser {
         {
           String n = name;
           String cmd = checkCommand();
-          return new Exec(n, cmd, readStrings(0));
+          return new Exec(n, readContext(), cmd);
         }
 
       case CODE:
@@ -210,7 +223,7 @@ public class TestParser {
           String n = name;
           String ext = fileExt;
           String cmd = checkCommand();
-          return new Code(n, ext, cmd, readStrings(0));
+          return new Code(n, readContext(), cmd, ext);
         }
 
       default:
@@ -255,7 +268,7 @@ public class TestParser {
 
   /** Parse the input as a TestSet: some explanatory text followed by some number of test cases. */
   private TestSet parseTestSet(File parent, String name) throws Exception {
-    String[] explain = readStrings(0);
+    String[] explain = readContext();
     return new TestSet(name, explain, parseTests(parent, 0));
   }
 
