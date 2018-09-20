@@ -160,15 +160,7 @@ public class TestParser {
 
   /** Read a sequence of text lines from the input, skipping any preceding blank lines. */
   private String[] readContext() {
-    while (nextLine() == TEXT) {
-      if (firstNonWhitespace() >= 0) {
-        String str = line;
-        String[] strs = readStrings(1);
-        strs[0] = str;
-        return strs;
-      }
-    }
-    return new String[0];
+    return readStrings(0);
   }
 
   /**
@@ -199,11 +191,7 @@ public class TestParser {
           }
           try {
             TestSet folder = readTestSet(parent, name, nesting + 1);
-            while (nextLine() == TEXT) {
-              if (firstNonWhitespace() >= 0) {
-                error("Text line is not part of a test case.");
-              }
-            }
+            readContext(); // Skip/discard context following the original "tests:" line.
             return folder;
           } catch (FileNotFoundException e) {
             error("Test file \"" + name + "\" not found");
