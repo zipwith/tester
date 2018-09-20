@@ -1,0 +1,23 @@
+This test file contains some simple tests for the Unix sort utility.
+
+.txt: animals           sort
+lion
+tiger
+panda
+racoon
+aardvark
+zebra
+bear
+wolf
+echidna
+
+exec: numbers          sort numbers
+This variant of the sort command treats the input as text strings that will
+be sorted in dictionary/lexicographic order.  So anything that starts with
+0 will come before anything that starts with a 1.
+
+exec: numbers-numeric  sort -n numbers
+By adding the -n command line option, we specify that the input should be
+treated (and hence sorted) as a list of numbers, so 007 will come before
+10, but not before 1.
+
