@@ -233,13 +233,12 @@ public abstract class Test {
   /**
    * Run this test using the specified parameters.
    *
-   * @param working is the working directory where the test will be executed.
    * @param expected is the folder where expected output files are stored.
    * @param actual is the folder where actual output files are stored.
    * @param path is the path name for this test case (for user display).
    * @param nesting specifies the current nesting level (to determine indentation).
    * @param flags specifies operating flags (RUNTESTS|INTERACT).
    */
-  abstract void run(File working, File expected, File actual, String path, int nesting, int flags)
+  abstract void run(File expected, File actual, String path, int nesting, int flags)
       throws Exception;
 }

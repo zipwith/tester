@@ -19,8 +19,7 @@ To begin, use the command `ant` to compile the code for `tester` and to create t
 
     $ tester
     usage: tester options ...
-    options: -wdir  set the working directory for test runs to dir
-             -r     run tests (dryrun without this option)
+    options: -r     run tests (dryrun without this option)
              -i     enable interaction to update expected results
              -c     do not print context for tests during interaction
              -q     quiet; do not print test progress messages

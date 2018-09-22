@@ -26,8 +26,7 @@ public class Main {
   public static void main(String[] args) {
     if (args.length == 0) {
       System.out.println("usage: tester options ...");
-      System.out.println("options: -wdir  set the working directory for test runs to dir");
-      System.out.println("         -r     run tests (dryrun without this option)");
+      System.out.println("options: -r     run tests (dryrun without this option)");
       System.out.println("         -i     enable interaction to update expected results");
       System.out.println("         -c     do not print context for tests during interaction");
       System.out.println("         -q     quiet; do not print test progress messages");
@@ -37,7 +36,6 @@ public class Main {
     }
     try {
       int flags = 0;
-      File working = null;
       File home = new File(".");
       for (int i = 0; i < args.length; i++) {
         if (args[i].startsWith("-")) {
@@ -45,14 +43,6 @@ public class Main {
           if (l <= 1) {
             System.out.println("Missing option characters");
             System.exit(-1);
-          }
-          if (args[i].charAt(1) == 'w') {
-            File nworking = new File(args[i].substring(2));
-            if (!nworking.exists() || !nworking.isDirectory()) {
-              System.out.println("Invalid working directory \"" + nworking.getPath() + "\"");
-              System.exit(-1);
-            }
-            working = nworking;
           } else {
             for (int j = 1; j < l; j++) {
               switch (args[i].charAt(j)) {
@@ -92,7 +82,7 @@ public class Main {
             System.exit(-1);
           }
           TestSet tests = TestParser.readTestSet(home, args[i]);
-          tests.run(working, expected, actual, "", 0, flags);
+          tests.run(expected, actual, "", 0, flags);
         }
       }
     } catch (Exception e) {

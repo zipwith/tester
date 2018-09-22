@@ -51,13 +51,7 @@ abstract class TestCase extends Test {
 
   /** Attempt to run a test that executes a command and captures output in the specified files. */
   protected boolean execTest(
-      File working,
-      ArrayList<String> cmds,
-      File expected,
-      File actual,
-      String path,
-      int nesting,
-      int flags)
+      ArrayList<String> cmds, File expected, File actual, String path, int nesting, int flags)
       throws Exception {
     String nameOut = name + ".out";
     File actualOut = new File(actual, nameOut);
@@ -73,7 +67,6 @@ abstract class TestCase extends Test {
 
       // Run the command:
       ProcessBuilder pb = new ProcessBuilder(cmds);
-      pb.directory(working);
       pb.redirectOutput(actualOut);
       pb.redirectError(actualErr);
       pb.start().waitFor();
