@@ -46,10 +46,10 @@ class Code extends TestCase {
     path = extendPath(path);
 
     // Print message to indicate start of test:
-    progress(flags, nesting, "CodeTest: " + cmd + " " + path + ext);
+    File src = new File(actual, name + ext);
+    progress(flags, nesting, "CodeTest: " + cmd + " " + src);
 
     // Create the test file:
-    File src = new File(actual, name + ext);
     writeFile(src, context);
 
     // Create and run test command:
