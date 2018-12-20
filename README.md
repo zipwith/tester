@@ -13,6 +13,13 @@ The following items are required to use the code in this repository:
 
 -------------
 
+### Acknowledgements:
+
+The development of tester was supported in part by funding from the
+National Science Foundation, Award No. CNS-1422979.
+
+-------------
+
 ## Installation
 
 To begin, use the command `ant` to compile the code for `tester` and to create the file `tester.jar`.  The recommended method for installation is to copy the `tester` shell script into a folder on your path, and then edit the copy to point to the location of the `tester.jar` file on your system.  After these steps, you should be able to run `tester` (without arguments) in any directory to produce the following output:
