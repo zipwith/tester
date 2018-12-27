@@ -113,7 +113,7 @@ abstract class TestCase extends Test {
           showContext(flags);
           contextShown = true;
           diff("standard output", expectedOut, actualOut);
-          if (ask("Use new output as the expected result", "yn") == 'y') {
+          if (ask("Use new output as the expected result for " + path, "yn") == 'y') {
             copy(actualOut, expectedOut);
             outSame = true;
           }
@@ -123,7 +123,7 @@ abstract class TestCase extends Test {
             showContext(flags);
           }
           diff("standard error", expectedErr, actualErr);
-          if (ask("Use new outputs as the expected results", "yn") == 'y') {
+          if (ask("Use new error output as expected results for " + path, "yn") == 'y') {
             copy(actualErr, expectedErr);
             errSame = true;
           }
