@@ -47,6 +47,6 @@ class Exec extends TestCase {
     // Create and run test command:
     ArrayList<String> cmds = new ArrayList();
     addArgs(cmds, cmd);
-    passed = execTest(cmds, expected, actual, path, nesting, flags);
+    passed = execTest(cmds, cmd, expected, actual, path, nesting, flags);
   }
 }

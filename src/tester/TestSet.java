@@ -69,6 +69,23 @@ class TestSet extends Test {
     return numPassed;
   }
 
+  /**
+   * Display a tree with summary statistics for each section of a test set. (Poor complexity in
+   * principle, but probably good enough in practice.)
+   */
+  public void displayTestTree(int nesting) {
+    for (int i = 0; i < nesting; i++) {
+      System.out.print("| ");
+    }
+    int n = numPassed();
+    int s = size();
+    String alert = (n != s) ? "  <<<<<<<" : "";
+    System.out.println(name + ": passed " + n + " of " + s + " tests" + alert);
+    for (int i = 0; i < tests.length; i++) {
+      tests[i].displayTestTree(nesting + 1);
+    }
+  }
+
   /** Name of root file where tests are stored. */
   public static final String root = "tests";
 
@@ -91,20 +108,23 @@ class TestSet extends Test {
     // Check that we can access expected and actual folders:
     File expectedDir = new File(expected, name);
     File actualDir = new File(actual, name);
-    if (!checkDirectory(expectedDir) || !checkDirectory(actualDir)) {
-      failed(flags, nesting, path, "Error with output directories");
+    if (!checkDirectory(expectedDir)) {
+      failed(flags, nesting, path, expectedDir.toString(), "Error with expected output directory");
+      return;
+    } else if (!checkDirectory(actualDir)) {
+      failed(flags, nesting, path, actualDir.toString(), "Error with actual output directory");
       return;
     }
 
     // Check for duplicate test names
     for (int i = 0; i < tests.length; i++) {
       if (tests[i].name.equals(TestSet.root)) {
-        failed(flags, nesting, path, "Test name \"" + TestSet.root + "\" is reserved");
+        failed(flags, nesting, path, "", "Test name \"" + TestSet.root + "\" is reserved");
         return;
       }
       for (int j = i + 1; j < tests.length; j++) {
         if (tests[i].name.equals(tests[j].name)) {
-          failed(flags, nesting, path, "Multiple subtests called \"" + tests[i].name + "\"");
+          failed(flags, nesting, path, "", "Multiple subtests called \"" + tests[i].name + "\"");
           return;
         }
       }

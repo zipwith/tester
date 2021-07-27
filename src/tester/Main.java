@@ -32,6 +32,7 @@ public class Main {
       System.out.println("         -q     quiet; do not print test progress messages");
       System.out.println("         -f     do not print test failed messages");
       System.out.println("         -s     do not print test set summaries");
+      System.out.println("         -t     display test tree summary at conclusion");
       System.exit(0);
     }
     try {
@@ -64,6 +65,9 @@ public class Main {
                 case 'c':
                   flags |= Test.CONTEXT;
                   break;
+                case 't':
+                  flags |= Test.TREE;
+                  break;
                 default:
                   System.out.println("Unknown command line flag " + args[i].charAt(j));
                   System.exit(-1);
@@ -83,8 +87,18 @@ public class Main {
           }
           TestSet tests = TestParser.readTestSet(home, args[i]);
           tests.run(expected, actual, "", 0, flags);
+          if ((flags & Test.TREE) != 0) {
+            System.out.println();
+            System.out.println("Summary of test case distribution:");
+            tests.displayTestTree(0);
+          }
+          if (tests.numPassed() == tests.size()) {
+            System.out.println();
+            System.out.println("ALL TESTS PASSED");
+          }
         }
       }
+      Test.displayFailures(flags);
     } catch (Exception e) {
       System.out.println("Exception occurred: " + e);
       e.printStackTrace();

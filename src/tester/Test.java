@@ -49,6 +49,12 @@ public abstract class Test {
   /** Calculate the total number of test cases that have passed in this test. */
   public abstract int numPassed();
 
+  /**
+   * Display a tree with summary statistics for each section of a test set. (Poor complexity in
+   * principle, but probably good enough in practice.)
+   */
+  public abstract void displayTestTree(int nesting);
+
   /** Compute a new path name for this test given the enclosing path. */
   protected String extendPath(String path) {
     return (path == null || path.length() == 0) ? name : (path + File.separator + name);
@@ -192,6 +198,9 @@ public abstract class Test {
   /** CONTEXT: 1=>do not show context for updates in interactive mode. */
   public static final int CONTEXT = 32;
 
+  /** TREE: 1=>show test tree summary at conclusion of tests. */
+  public static final int TREE = 64;
+
   /** Display a message at a specified nesting level. */
   private void message(int nesting, String msg) {
     for (int i = 0; i < nesting; i++) {
@@ -208,9 +217,11 @@ public abstract class Test {
   }
 
   /** Display a failure message. */
-  protected void failed(int flags, int nesting, String path, String msg) {
+  protected void failed(int flags, int nesting, String path, String context, String msg) {
     if ((flags & FAILED) == 0) {
-      message(nesting, "FAILED " + path + ": " + msg);
+      String text = "FAILED " + path + ": " + msg;
+      message(nesting, text + " (failed " + (totalTests - totalPassed) + " of " + totalTests + ")");
+      Test.failures.add(new FailureSummary(text, context));
     }
   }
 
@@ -229,6 +240,32 @@ public abstract class Test {
       }
     }
   }
+
+  /** Tracks all of the failures reported since tester started. */
+  public static ArrayList<FailureSummary> failures = new ArrayList();
+
+  /** Display a summary of all the failures that have been reported. */
+  public static void displayFailures(int flags) {
+    int size = failures.size();
+    if (size > 0 && (flags & FAILED) == 0) {
+      System.out.println();
+      System.out.println("TOTAL number of problems reported: " + size);
+      for (FailureSummary f : failures) {
+        System.out.println("... " + f.text);
+        if (f.context.length() != 0) {
+          System.out.println("    context: " + f.context);
+        }
+      }
+    }
+  }
+
+  /**
+   * Global statistics about the numbers of tests that have been run and passed since execution
+   * began.
+   */
+  public static int totalTests = 0;
+
+  public static int totalPassed = 0;
 
   /**
    * Run this test using the specified parameters.

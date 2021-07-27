@@ -49,9 +49,21 @@ abstract class TestCase extends Test {
     return passed ? 1 : 0;
   }
 
+  /**
+   * Display a tree with summary statistics for each section of a test set. (Poor complexity in
+   * principle, but probably good enough in practice.)
+   */
+  public void displayTestTree(int nesting) {}
+
   /** Attempt to run a test that executes a command and captures output in the specified files. */
   protected boolean execTest(
-      ArrayList<String> cmds, File expected, File actual, String path, int nesting, int flags)
+      ArrayList<String> cmds,
+      String context,
+      File expected,
+      File actual,
+      String path,
+      int nesting,
+      int flags)
       throws Exception {
     String nameOut = name + ".out";
     File actualOut = new File(actual, nameOut);
@@ -61,7 +73,7 @@ abstract class TestCase extends Test {
     if ((flags & RUNTESTS) != 0) {
       // Check that we can write to the files for capturing output:
       if (!checkFile(actualOut) || !checkFile(actualErr)) {
-        failed(flags, nesting, path, "Cannot access files for capturing output");
+        failed(flags, nesting, path, context, "Cannot access files for capturing output");
         return false;
       }
 
@@ -71,6 +83,7 @@ abstract class TestCase extends Test {
       pb.redirectError(actualErr);
       pb.start().waitFor();
     }
+    totalTests++;
 
     File expectedOut = new File(expected, nameOut);
     File expectedErr = new File(expected, nameErr);
@@ -100,7 +113,7 @@ abstract class TestCase extends Test {
                   + ": Expected and actual outputs are missing; use -r to run tests?");
         }
       }
-      failed(flags, nesting, path, "Missing expected outputs");
+      failed(flags, nesting, path, context, "Missing expected outputs");
       return false;
     }
     boolean outSame = sameContent(actualOut, expectedOut);
@@ -131,10 +144,12 @@ abstract class TestCase extends Test {
       }
     }
     if (outSame && errSame) {
-      progress(flags, nesting, "PASSED " + path);
+      totalPassed++;
+      progress(
+          flags, nesting, "PASSED " + path + " (passed " + totalPassed + " of " + totalTests + ")");
       return true;
     } else {
-      failed(flags, nesting, path, "Test did not produce expected outputs");
+      failed(flags, nesting, path, context, "Test did not produce expected outputs");
       return false;
     }
   }

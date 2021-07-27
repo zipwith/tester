@@ -56,6 +56,6 @@ class Code extends TestCase {
     ArrayList<String> cmds = new ArrayList();
     addArgs(cmds, cmd);
     cmds.add(src.getPath());
-    passed = execTest(cmds, expected, actual, path, nesting, flags);
+    passed = execTest(cmds, cmd + " " + src.getPath(), expected, actual, path, nesting, flags);
   }
 }
